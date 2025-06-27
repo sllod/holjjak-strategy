@@ -2,7 +2,7 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="로또 번호 생성기(만두전용)", layout="centered")
+st.set_page_config(page_title="로또 번호 생성기(만두)", layout="centered")
 
 st.markdown("""<style>
     body {
