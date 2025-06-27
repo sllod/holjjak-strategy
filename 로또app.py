@@ -41,7 +41,7 @@ st.markdown("""<style>
     }
 </style>""", unsafe_allow_html=True)
 
-st.title("🎯 로또 번호 생성기(만두전용)")
+st.title("🎯 로또 번호 생성기(만두)")
 st.caption("푸른 바다처럼 맑고 차분한 마음으로, 전략적인 조합을 생성해봐요 🌊")
 
 # 사용자 입력
