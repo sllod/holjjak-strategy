@@ -2,7 +2,7 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="로또 자동 조합 생성기 (만두 전용)", layout="centered")
+st.set_page_config(page_title="로또 번호 생성 (만두 전용)", layout="centered")
 
 st.markdown("""<style>
     .highlight {
@@ -23,7 +23,7 @@ st.markdown("""<style>
     }
 </style>""", unsafe_allow_html=True)
 
-st.title("🎯 로또 기댓값 우위 전략 생성기 (만두 전용)")
+st.title("★ 로또 번호 생성 ★(만두 전용)")
 st.caption("최근 1등 번호를 기준으로 제외 & 분포를 보정하여, 최상의 조합을 10개 생성해줄게!")
 
 # 사용자 입력
