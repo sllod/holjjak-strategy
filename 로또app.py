@@ -57,10 +57,10 @@ else:
     allowed_ratios = ["2:4", "3:3", "4:2"]
 
 def generate_lotto_numbers(exclude_set, include_set):
-    candidate = set(range(1, 46)) - exclude_set
+    candidate = set(range(1, 46)) - exclude_set - include_set
     if len(candidate) < (6 - len(include_set)):
         return None
-    nums = set(random.sample(candidate, 6 - len(include_set)))
+    nums = set(random.sample(list(candidate), 6 - len(include_set)))
     nums = nums.union(include_set)
     return sorted(nums)
 
