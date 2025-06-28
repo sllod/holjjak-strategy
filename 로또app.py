@@ -79,3 +79,26 @@ if st.button("번호 생성"):
         nums = generate_lotto_numbers() if mode == "자동" else generate_based_on_recent(recent_set)
         if passes_filters(nums, recent_set):
             if nums not in results:
+                results.append(nums)
+
+    if results:
+        all_numbers = []
+        for i, numbers in enumerate(results, start=1):
+            total = sum(numbers)
+            avg = np.mean(numbers)
+            odds_count = len([n for n in numbers if n % 2 == 1])
+            evens_count = len([n for n in numbers if n % 2 == 0])
+            all_numbers.extend(numbers)
+
+            st.write(f"### 🎯 조합 {i}: **{numbers}**")
+            st.write(f"합계: **{total}**, 평균: **{avg:.2f}**, 홀: **{odds_count}**, 짝: **{evens_count}**")
+            st.markdown("---")
+
+        # 전체 번호 등장 빈도 통계
+        freq = Counter(all_numbers)
+        st.subheader("📊 전체 번호 등장 빈도")
+        freq_df = sorted(freq.items())
+        freq_text = ", ".join([f"{num}:{cnt}" for num, cnt in freq_df])
+        st.write(freq_text)
+    else:
+        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
