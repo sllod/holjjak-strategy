@@ -1,27 +1,37 @@
 import streamlit as st
 import random
 import time
+import pandas as pd
+import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="로또 번호 생성기", page_icon="🎲")
+st.set_page_config(page_title="궁극 로또 번호 생성기", page_icon="🎲")
 
-st.title("🎲 로또 번호 생성기")
+st.title("🎲 궁극 로또 번호 생성기")
 
 st.markdown("""
-### ✨ 고급 필터 기반 로또 번호 생성
-본 생성기는 **수백만 개 조합 중 무작위 시뮬레이션 및 필터링**을 통해 최적의 조합을 제공합니다.
+### ✨ 풀옵션 궁극 버전
+본 생성기는 **수백만 개 조합 중 무작위 시뮬레이션 및 고급 필터링**을 통해 최적의 조합을 제공합니다.
 
-#### 🎯 필터링 기준
+#### 🎯 필터 기준
 - ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
-- ⚖️ **홀/짝 비율**: 선택한 비율만 허용  
-  ↳ **사유**: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외
-- 📊 **숫자 분포**: 1~45 범위에서 고르게 분포
+- ⚖️ **홀/짝 비율**: 선택한 비율만 허용 (AI 추천 포함)
+- 📊 **숫자 분포**: 고르게 분포
 """)
 
+# 모드
 mode = st.radio("모드 선택", ["자동", "최근 1등 번호 기반"], index=0)
 
+# 최근 번호
 recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placeholder="예: 3,11,15,29,35,44")
 
+# 제외 번호
+exclude_numbers_input = st.text_input("제외할 번호 (쉼표로 구분)", placeholder="예: 7,13,22")
+
+# 포함 번호
+include_numbers_input = st.text_input("반드시 포함할 번호 (쉼표로 구분)", placeholder="예: 1,5")
+
+# 홀짝 비율
 ratio_option = st.selectbox(
     "허용할 홀/짝 비율 선택",
     options=[
@@ -32,17 +42,36 @@ ratio_option = st.selectbox(
         "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2"
     ],
     index=0,
-    help="AI 추천은 실제 로또 당첨 통계에 기반하여 가장 자주 등장한 균형 잡힌 비율 (홀3:짝3, 홀4:짝2)만 허용합니다."
+    help="AI 추천은 실제 로또 당첨 통계 기반의 비율 (홀3:짝3, 홀4:짝2)만 허용합니다."
 )
 
-NUM_SETS = 5  # 무조건 5개 생성
+NUM_SETS = 5  # 고정
 
-def generate_lotto_numbers():
-    return sorted(random.sample(range(1, 46), 6))
+# 히스토리 초기화
+if "history" not in st.session_state:
+    st.session_state["history"] = []
 
-def generate_based_on_recent(recent):
-    candidate = set(range(1, 46)) - set(recent)
-    return sorted(random.sample(candidate, 6))
+# 허용된 비율 리스트
+if ratio_option == "AI 추천 비율 (홀3:짝3, 홀4:짝2)":
+    allowed_ratios = ["3:3", "4:2"]
+elif ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
+    allowed_ratios = ["2:4", "3:3", "4:2"]
+elif ratio_option == "홀2 : 짝4":
+    allowed_ratios = ["2:4"]
+elif ratio_option == "홀3 : 짝3":
+    allowed_ratios = ["3:3"]
+elif ratio_option == "홀4 : 짝2":
+    allowed_ratios = ["4:2"]
+else:
+    allowed_ratios = ["2:4", "3:3", "4:2"]
+
+def generate_lotto_numbers(exclude_set, include_set):
+    candidate = set(range(1, 46)) - exclude_set
+    if len(candidate) < (6 - len(include_set)):
+        return None
+    nums = set(random.sample(candidate, 6 - len(include_set)))
+    nums = nums.union(include_set)
+    return sorted(nums)
 
 def passes_filters(numbers, recent_set, allowed_ratios):
     if len(set(numbers) & recent_set) > 1:
@@ -73,37 +102,29 @@ if st.button("번호 생성"):
     with st.spinner("수백만 개 조합 중 시뮬레이션 및 필터링 중..."):
         time.sleep(random.uniform(1, 2))
 
-    # 허용된 비율 리스트 생성
-    if ratio_option == "AI 추천 비율 (홀3:짝3, 홀4:짝2)":
-        allowed_ratios = ["3:3", "4:2"]
-    elif ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
-        allowed_ratios = ["2:4", "3:3", "4:2"]
-    elif ratio_option == "홀2 : 짝4":
-        allowed_ratios = ["2:4"]
-    elif ratio_option == "홀3 : 짝3":
-        allowed_ratios = ["3:3"]
-    elif ratio_option == "홀4 : 짝2":
-        allowed_ratios = ["4:2"]
-    else:
-        allowed_ratios = ["2:4", "3:3", "4:2"]  # 기본값
+    try:
+        recent_list = [int(x.strip()) for x in recent_numbers.split(",") if x.strip()]
+        recent_set = set(recent_list) if len(recent_list) == 6 else set()
+    except:
+        recent_set = set()
+
+    try:
+        exclude_set = set(int(x.strip()) for x in exclude_numbers_input.split(",") if x.strip())
+    except:
+        exclude_set = set()
+
+    try:
+        include_set = set(int(x.strip()) for x in include_numbers_input.split(",") if x.strip())
+    except:
+        include_set = set()
 
     results = []
-    recent_set = set()
-    if mode == "최근 1등 번호 기반":
-        try:
-            recent_list = [int(x.strip()) for x in recent_numbers.split(",") if x.strip()]
-            if len(recent_list) != 6:
-                st.error("최근 번호는 반드시 6개여야 합니다.")
-            else:
-                recent_set = set(recent_list)
-        except:
-            st.error("번호 입력 형식을 확인하세요!")
-            recent_set = set()
-
     tries = 0
     while len(results) < NUM_SETS and tries < 100000:
         tries += 1
-        nums = generate_lotto_numbers() if mode == "자동" else generate_based_on_recent(recent_set)
+        nums = generate_lotto_numbers(exclude_set, include_set)
+        if nums is None:
+            break
         if passes_filters(nums, recent_set, allowed_ratios):
             if nums not in results:
                 results.append(nums)
@@ -117,5 +138,37 @@ if st.button("번호 생성"):
             st.write(f"### 🎯 조합 {i}: **{numbers}**")
             st.write(f"합계: **{total}** (짝: {evens_count}개, 홀: {odds_count}개)")
             st.markdown("---")
+
+            # 히스토리에 저장
+            st.session_state["history"].append(numbers)
+            if len(st.session_state["history"]) > 10:
+                st.session_state["history"] = st.session_state["history"][-10:]
+
+        # 분포 시각화
+        all_nums = [n for combo in results for n in combo]
+        bins = [f"{i}-{i+9}" for i in range(1, 46, 10)]
+        counts = [len([n for n in all_nums if i <= n <= i+9]) for i in range(1, 46, 10)]
+
+        fig, ax = plt.subplots()
+        ax.bar(bins, counts)
+        ax.set_title("번호 구간 분포")
+        ax.set_ylabel("개수")
+        st.pyplot(fig)
+
+        # CSV 다운로드
+        df = pd.DataFrame({"조합": [str(combo) for combo in results]})
+        csv = df.to_csv(index=False).encode('utf-8-sig')
+        st.download_button(
+            label="CSV 다운로드",
+            data=csv,
+            file_name='lotto_combinations.csv',
+            mime='text/csv',
+        )
+
+        # 히스토리 표시
+        st.subheader("🕘 최근 히스토리 (최대 10개)")
+        for idx, hist in enumerate(reversed(st.session_state["history"]), start=1):
+            st.write(f"{idx}: {hist}")
+
     else:
-        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
+        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호, 포함/제외 번호를 확인해보세요.)")
