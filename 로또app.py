@@ -10,7 +10,7 @@ st.markdown("""
 ### ✨ 고급 필터 기반 로또 번호 생성
 본 생성기는 **수백만 개 조합 중 무작위 시뮬레이션 및 필터링**을 통해 최적의 조합을 제공합니다.
 
-#### 필터링 기준
+#### 🎯 필터링 기준
 - ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
 - ⚖️ **홀/짝 비율**: 2:4, 3:3, 4:2 비율만 허용
@@ -21,7 +21,7 @@ mode = st.radio("모드 선택", ["자동", "최근 1등 번호 기반"], index=
 
 recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placeholder="예: 3,11,15,29,35,44")
 
-num_sets = st.slider("생성할 조합 수량", min_value=1, max_value=5, value=1)
+NUM_SETS = 5  # 무조건 5개 생성
 
 def generate_lotto_numbers():
     return sorted(random.sample(range(1, 46), 6))
@@ -31,11 +31,9 @@ def generate_based_on_recent(recent):
     return sorted(random.sample(candidate, 6))
 
 def passes_filters(numbers, recent_set):
-    # 최근 번호 필터: 최대 1개만 포함
     if len(set(numbers) & recent_set) > 1:
         return False
 
-    # 연속 번호 3개 이상 제거
     sorted_nums = sorted(numbers)
     current = 1
     for i in range(1, len(sorted_nums)):
@@ -46,13 +44,11 @@ def passes_filters(numbers, recent_set):
         else:
             current = 1
 
-    # 홀짝 비율
     odds = [n for n in numbers if n % 2 == 1]
     evens = [n for n in numbers if n % 2 == 0]
     if not ((len(odds), len(evens)) in [(2, 4), (3, 3), (4, 2)]):
         return False
 
-    # 숫자 분포: 최소 범위 차이 (예: 15 이상)
     if max(numbers) - min(numbers) < 15:
         return False
 
@@ -60,7 +56,7 @@ def passes_filters(numbers, recent_set):
 
 if st.button("번호 생성"):
     with st.spinner("수백만 개 조합 중 시뮬레이션 및 필터링 중..."):
-        time.sleep(random.uniform(1, 2))  # 로딩 시간 1~2초
+        time.sleep(random.uniform(1, 2))
 
     results = []
     recent_set = set()
@@ -76,7 +72,7 @@ if st.button("번호 생성"):
             recent_set = set()
 
     tries = 0
-    while len(results) < num_sets and tries < 100000:
+    while len(results) < NUM_SETS and tries < 100000:
         tries += 1
         nums = generate_lotto_numbers() if mode == "자동" else generate_based_on_recent(recent_set)
         if passes_filters(nums, recent_set):
