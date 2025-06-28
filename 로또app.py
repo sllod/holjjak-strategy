@@ -5,7 +5,7 @@ import pandas as pd
 
 st.set_page_config(page_title="로또 번호 생성기", page_icon="🎲")
 
-st.title("🎲 로또 번호 생성기")
+st.title("🎲로또 번호 생성기")
 
 st.markdown("""
 ### ✨ 고급 필터 기반 로또 번호 생성
@@ -14,8 +14,8 @@ st.markdown("""
 #### 🎯 필터 기준
 - ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
-- ⚖️ **홀/짝 비율**: 선택한 비율만 허용 (AI 추천 포함)
- ↳ **참고**: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외합니다
+- ⚖️ **홀/짝 비율**: 선택한 비율만 허용 (AI 추천 포함)  
+  ↳ **참고**: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외합니다.
 - 📊 **숫자 분포**: 고르게 분포
 """)
 
@@ -134,7 +134,6 @@ if st.button("번호 생성"):
             if len(st.session_state["history"]) > 10:
                 st.session_state["history"] = st.session_state["history"][-10:]
 
-        # 구간 분포 시각화
         all_nums = [n for combo in results for n in combo]
         ranges = list(range(1, 46, 10))
         bins = [f"{i}-{i+9}" for i in ranges]
@@ -143,7 +142,6 @@ if st.button("번호 생성"):
         df_chart = pd.DataFrame({"구간": bins, "개수": counts}).set_index("구간")
         st.bar_chart(df_chart)
 
-        # CSV 다운로드
         df = pd.DataFrame({"조합": [str(combo) for combo in results]})
         csv = df.to_csv(index=False).encode('utf-8-sig')
         st.download_button(
@@ -153,7 +151,6 @@ if st.button("번호 생성"):
             mime='text/csv',
         )
 
-        # 히스토리 표시
         st.subheader("🕘 최근 히스토리 (최대 10개)")
         for idx, hist in enumerate(reversed(st.session_state["history"]), start=1):
             st.write(f"{idx}: {hist}")
