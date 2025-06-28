@@ -131,8 +131,8 @@ if st.button("번호 생성"):
             st.markdown("---")
 
             st.session_state["history"].append(numbers)
-            if len(st.session_state["history"]) > 10:
-                st.session_state["history"] = st.session_state["history"][-10:]
+            if len(st.session_state["history"]) > 20:
+                st.session_state["history"] = st.session_state["history"][-20:]
 
         df = pd.DataFrame({"조합": [str(combo) for combo in results]})
         csv = df.to_csv(index=False).encode('utf-8-sig')
@@ -143,7 +143,7 @@ if st.button("번호 생성"):
             mime='text/csv',
         )
 
-        st.subheader("🕘 최근 히스토리 (최대 10개)")
+        st.subheader("🕘 최근 히스토리 (최대 20개)")
         for idx, hist in enumerate(reversed(st.session_state["history"]), start=1):
             st.write(f"{idx}: {hist}")
 
