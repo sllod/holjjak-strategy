@@ -1,10 +1,12 @@
 import streamlit as st
 import random
 import time
+import numpy as np
+from collections import Counter
 
 st.set_page_config(page_title="로또 번호 생성기", page_icon="🎲")
 
-st.title("로또 번호 생성기")
+st.title("🎲 로또 번호 생성기")
 
 st.markdown("""
 ### ✨ 고급 필터 기반 로또 번호 생성
@@ -77,11 +79,5 @@ if st.button("번호 생성"):
         nums = generate_lotto_numbers() if mode == "자동" else generate_based_on_recent(recent_set)
         if passes_filters(nums, recent_set):
             if nums not in results:
-                results.append(nums)
-
-    if results:
-        for i, numbers in enumerate(results, start=1):
-            st.write(f"🎯 조합 {i}: **{numbers}**")
-    else:
-        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
+                resul
 
