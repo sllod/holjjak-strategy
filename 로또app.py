@@ -24,8 +24,15 @@ recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placehol
 
 ratio_option = st.selectbox(
     "허용할 홀/짝 비율 선택",
-    options=["홀2 : 짝4", "홀3 : 짝3", "홀4 : 짝2", "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2"],
-    index=3
+    options=[
+        "AI 추천 비율 (홀3:짝3, 홀4:짝2)",
+        "홀2 : 짝4",
+        "홀3 : 짝3",
+        "홀4 : 짝2",
+        "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2"
+    ],
+    index=0,
+    help="AI 추천은 실제 로또 당첨 통계에 기반하여 가장 자주 등장한 균형 잡힌 비율 (홀3:짝3, 홀4:짝2)만 허용합니다."
 )
 
 NUM_SETS = 5  # 무조건 5개 생성
@@ -67,7 +74,9 @@ if st.button("번호 생성"):
         time.sleep(random.uniform(1, 2))
 
     # 허용된 비율 리스트 생성
-    if ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
+    if ratio_option == "AI 추천 비율 (홀3:짝3, 홀4:짝2)":
+        allowed_ratios = ["3:3", "4:2"]
+    elif ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
         allowed_ratios = ["2:4", "3:3", "4:2"]
     elif ratio_option == "홀2 : 짝4":
         allowed_ratios = ["2:4"]
