@@ -94,11 +94,10 @@ if st.button("번호 생성"):
             st.write(f"합계: **{total}**, 평균: **{avg:.2f}**, 홀: **{odds_count}**, 짝: **{evens_count}**")
             st.markdown("---")
 
-        # 전체 번호 등장 빈도 통계
         freq = Counter(all_numbers)
         st.subheader("📊 전체 번호 등장 빈도")
         freq_df = sorted(freq.items())
-        freq_text = ", ".join([f"{num}:{cnt}" for num, cnt in freq_df])
-        st.write(freq_text)
+        for num, cnt in freq_df:
+            st.write(f"{num}: {cnt}번 ")
     else:
         st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
