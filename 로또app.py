@@ -1,8 +1,6 @@
 import streamlit as st
 import random
 import time
-import numpy as np
-from collections import Counter
 
 st.set_page_config(page_title="로또 번호 생성기", page_icon="🎲")
 
@@ -82,22 +80,11 @@ if st.button("번호 생성"):
                 results.append(nums)
 
     if results:
-        all_numbers = []
         for i, numbers in enumerate(results, start=1):
             total = sum(numbers)
-            avg = np.mean(numbers)
-            odds_count = len([n for n in numbers if n % 2 == 1])
-            evens_count = len([n for n in numbers if n % 2 == 0])
-            all_numbers.extend(numbers)
 
             st.write(f"### 🎯 조합 {i}: **{numbers}**")
-            st.write(f"합계: **{total}**, 평균: **{avg:.2f}**, 홀: **{odds_count}**, 짝: **{evens_count}**")
+            st.write(f"합계: **{total}**")
             st.markdown("---")
-
-        freq = Counter(all_numbers)
-        st.subheader("📊 전체 번호 등장 빈도")
-        freq_df = sorted(freq.items())
-        for num, cnt in freq_df:
-            st.write(f"{num}: {cnt}번 ")
     else:
         st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
