@@ -105,8 +105,8 @@ if st.button("번호 생성"):
             odds_count = len([n for n in numbers if n % 2 == 1])
             evens_count = len([n for n in numbers if n % 2 == 0])
 
-            st.write(f"### 🎯 조합 {i}: **{numbers}** (짝: {evens_count}개, 홀: {odds_count}개)")
-            st.write(f"합계: **{total}**")
+            st.write(f"### 🎯 조합 {i}: **{numbers}**
+            st.write(f"합계: **{total}** (짝: {evens_count}개, 홀: {odds_count}개)")
             st.markdown("---")
     else:
         st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
