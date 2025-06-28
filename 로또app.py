@@ -14,7 +14,7 @@ st.markdown("""
 - ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
 - ⚖️ **홀/짝 비율**: 선택한 비율만 허용  
-  ↳ **사유**: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외
+  ↳ *참고*: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외
 - 📊 **숫자 분포**: 1~45 범위에서 고르게 분포
 """)
 
@@ -24,7 +24,7 @@ recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placehol
 
 ratio_option = st.selectbox(
     "허용할 홀/짝 비율 선택",
-    options=["2:4", "3:3", "4:2", "2:4, 3:3, 4:2"],
+    options=["홀2 : 짝4", "홀3 : 짝3", "홀4 : 짝2", "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2"],
     index=3
 )
 
@@ -67,10 +67,16 @@ if st.button("번호 생성"):
         time.sleep(random.uniform(1, 2))
 
     # 허용된 비율 리스트 생성
-    if ratio_option == "2:4, 3:3, 4:2":
+    if ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
         allowed_ratios = ["2:4", "3:3", "4:2"]
+    elif ratio_option == "홀2 : 짝4":
+        allowed_ratios = ["2:4"]
+    elif ratio_option == "홀3 : 짝3":
+        allowed_ratios = ["3:3"]
+    elif ratio_option == "홀4 : 짝2":
+        allowed_ratios = ["4:2"]
     else:
-        allowed_ratios = [ratio_option]
+        allowed_ratios = ["2:4", "3:3", "4:2"]  # 기본값
 
     results = []
     recent_set = set()
@@ -101,4 +107,5 @@ if st.button("번호 생성"):
             st.markdown("---")
     else:
         st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호를 확인해보세요.)")
+
 
