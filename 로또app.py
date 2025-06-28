@@ -111,7 +111,7 @@ if st.button("번호 생성"):
 
     results = []
     tries = 0
-    while len(results) < NUM_SETS and tries < 100000:
+    while len(results) < NUM_SETS and tries < 1_000_000:
         tries += 1
         nums = generate_lotto_numbers(exclude_set, include_set)
         if nums is None:
