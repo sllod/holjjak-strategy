@@ -79,5 +79,3 @@ if st.button("번호 생성"):
         nums = generate_lotto_numbers() if mode == "자동" else generate_based_on_recent(recent_set)
         if passes_filters(nums, recent_set):
             if nums not in results:
-                resul
-
