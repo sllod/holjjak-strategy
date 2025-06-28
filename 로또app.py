@@ -2,7 +2,6 @@ import streamlit as st
 import random
 import time
 import pandas as pd
-import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="궁극 로또 번호 생성기", page_icon="🎲")
 
@@ -19,19 +18,12 @@ st.markdown("""
 - 📊 **숫자 분포**: 고르게 분포
 """)
 
-# 모드
 mode = st.radio("모드 선택", ["자동", "최근 1등 번호 기반"], index=0)
 
-# 최근 번호
 recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placeholder="예: 3,11,15,29,35,44")
-
-# 제외 번호
 exclude_numbers_input = st.text_input("제외할 번호 (쉼표로 구분)", placeholder="예: 7,13,22")
-
-# 포함 번호
 include_numbers_input = st.text_input("반드시 포함할 번호 (쉼표로 구분)", placeholder="예: 1,5")
 
-# 홀짝 비율
 ratio_option = st.selectbox(
     "허용할 홀/짝 비율 선택",
     options=[
@@ -47,11 +39,9 @@ ratio_option = st.selectbox(
 
 NUM_SETS = 5  # 고정
 
-# 히스토리 초기화
 if "history" not in st.session_state:
     st.session_state["history"] = []
 
-# 허용된 비율 리스트
 if ratio_option == "AI 추천 비율 (홀3:짝3, 홀4:짝2)":
     allowed_ratios = ["3:3", "4:2"]
 elif ratio_option == "홀2 : 짝4, 홀3 : 짝3, 홀4 : 짝2":
@@ -139,21 +129,18 @@ if st.button("번호 생성"):
             st.write(f"합계: **{total}** (짝: {evens_count}개, 홀: {odds_count}개)")
             st.markdown("---")
 
-            # 히스토리에 저장
             st.session_state["history"].append(numbers)
             if len(st.session_state["history"]) > 10:
                 st.session_state["history"] = st.session_state["history"][-10:]
 
-        # 분포 시각화
+        # 구간 분포 시각화
         all_nums = [n for combo in results for n in combo]
-        bins = [f"{i}-{i+9}" for i in range(1, 46, 10)]
-        counts = [len([n for n in all_nums if i <= n <= i+9]) for i in range(1, 46, 10)]
+        ranges = list(range(1, 46, 10))
+        bins = [f"{i}-{i+9}" for i in ranges]
+        counts = [len([n for n in all_nums if i <= n <= i+9]) for i in ranges]
 
-        fig, ax = plt.subplots()
-        ax.bar(bins, counts)
-        ax.set_title("번호 구간 분포")
-        ax.set_ylabel("개수")
-        st.pyplot(fig)
+        df_chart = pd.DataFrame({"구간": bins, "개수": counts}).set_index("구간")
+        st.bar_chart(df_chart)
 
         # CSV 다운로드
         df = pd.DataFrame({"조합": [str(combo) for combo in results]})
