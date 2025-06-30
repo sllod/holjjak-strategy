@@ -13,7 +13,7 @@ st.markdown("""
 
 본 서비스는 참고용 번호 추천 도구이며, 당첨을 보장하지 않습니다. 실제 구매 결정은 개인의 책임입니다.
 
-#### 🎯 필터 기준
+#### 📊 필터 기준
 - ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
 - ⚖️ **홀/짝 비율**: 선택한 비율만 허용 (AI 추천 포함)  
@@ -40,7 +40,7 @@ ratio_option = st.selectbox(
     help="AI 추천은 실제 로또 당첨 통계 기반의 비율 (홀3:짝3, 홀4:짝2)만 허용합니다."
 )
 
-NUM_SETS = 5  # 고정
+NUM_SETS = 5
 
 if "history" not in st.session_state:
     st.session_state["history"] = []
@@ -128,7 +128,7 @@ if st.button("번호 생성"):
             odds_count = len([n for n in numbers if n % 2 == 1])
             evens_count = len([n for n in numbers if n % 2 == 0])
 
-            st.write(f"### 🎯 조합 {i}: **{numbers}**")
+            st.write(f"### 🎲 조합 {i}: **{numbers}**")
             st.write(f"합계: **{total}** (짝: {evens_count}개, 홀: {odds_count}개)")
             st.markdown("---")
 
@@ -151,3 +151,11 @@ if st.button("번호 생성"):
 
     else:
         st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호, 포함/제외 번호를 확인해보세요.)")
+
+# 🔎 정밀 분석 보기 버튼
+if st.button("🔎 정밀 분석 보기"):
+    st.success("정밀 분석 페이지로 이동 중... (여기에 티스토리 분석 링크나 내부 분석 페이지 연결)")
+
+# 🤖 AI 분석 리포트 받기 버튼
+if st.button("🤖 AI 분석 리포트 받기"):
+    st.info("AI 리포트 생성 중... (여기에 PDF 다운로드 기능이나 분석 상세 페이지 연결)")
