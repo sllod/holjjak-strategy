@@ -7,23 +7,27 @@ st.set_page_config(page_title="로또 번호 생성기", page_icon="🎲")
 
 st.title("로또 번호 생성기")
 
+# 🔎 정밀 분석 보기 버튼
+if st.button("🔎 정밀 분석 보기"):
+    st.success("정밀 분석 페이지로 이동 중... (여기에 티스토리 분석 링크나 내부 분석 페이지 연결)")
+
+# 🤖 AI 분석 리포트 받기 버튼
+if st.button("🤖 AI 분석 리포트 받기"):
+    st.info("AI 리포트 생성 중... (여기에 PDF 다운로드 기능이나 분석 상세 페이지 연결)")
+
 st.markdown("""
-### ✨ 고급 필터 기반 로또 번호 생성
+### 📊 고급 필터 기준 안내
 본 생성기는 **수백만 개 조합 중 무작위 시뮬레이션 및 고급 필터링**을 통해 최적의 조합을 제공합니다.
 
 본 서비스는 참고용 번호 추천 도구이며, 당첨을 보장하지 않습니다. 실제 구매 결정은 개인의 책임입니다.
 
 #### 📊 필터 기준
-- ❌ **최근 1등 번호**: 최대 1개만 포함
 - 🔁 **연속번호**: 3개 이상 연속 시 제거
 - ⚖️ **홀/짝 비율**: 선택한 비율만 허용 (AI 추천 포함)  
   ↳ **참고**: 실제 로또 1등 번호 통계상, 극단적인 홀짝 조합(예: 6:0, 5:1)은 거의 나오지 않기 때문에 제외합니다.
 - 📊 **숫자 분포**: 1~45 범위에서 고르게 분포
 """)
 
-mode = st.radio("모드 선택", ["자동", "최근 1등 번호 기반"], index=0)
-
-recent_numbers = st.text_input("최근 1등 번호 (쉼표로 구분)", placeholder="예: 3,11,15,29,35,44")
 exclude_numbers_input = st.text_input("제외할 번호 (쉼표로 구분)", placeholder="예: 7,13,22")
 include_numbers_input = st.text_input("반드시 포함할 번호 (쉼표로 구분)", placeholder="예: 1,5")
 
@@ -66,10 +70,7 @@ def generate_lotto_numbers(exclude_set, include_set):
     nums = nums.union(include_set)
     return sorted(nums)
 
-def passes_filters(numbers, recent_set, allowed_ratios):
-    if len(set(numbers) & recent_set) > 1:
-        return False
-
+def passes_filters(numbers, allowed_ratios):
     sorted_nums = sorted(numbers)
     current = 1
     for i in range(1, len(sorted_nums)):
@@ -96,12 +97,6 @@ if st.button("번호 생성"):
         time.sleep(random.uniform(1, 2))
 
     try:
-        recent_list = [int(x.strip()) for x in recent_numbers.split(",") if x.strip()]
-        recent_set = set(recent_list) if len(recent_list) == 6 else set()
-    except:
-        recent_set = set()
-
-    try:
         exclude_set = set(int(x.strip()) for x in exclude_numbers_input.split(",") if x.strip())
     except:
         exclude_set = set()
@@ -118,7 +113,7 @@ if st.button("번호 생성"):
         nums = generate_lotto_numbers(exclude_set, include_set)
         if nums is None:
             break
-        if passes_filters(nums, recent_set, allowed_ratios):
+        if passes_filters(nums, allowed_ratios):
             if nums not in results:
                 results.append(nums)
 
@@ -150,12 +145,4 @@ if st.button("번호 생성"):
             st.write(f"{idx}: {hist}")
 
     else:
-        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 최근 번호, 포함/제외 번호를 확인해보세요.)")
-
-# 🔎 정밀 분석 보기 버튼
-if st.button("🔎 정밀 분석 보기"):
-    st.success("정밀 분석 페이지로 이동 중... (여기에 티스토리 분석 링크나 내부 분석 페이지 연결)")
-
-# 🤖 AI 분석 리포트 받기 버튼
-if st.button("🤖 AI 분석 리포트 받기"):
-    st.info("AI 리포트 생성 중... (여기에 PDF 다운로드 기능이나 분석 상세 페이지 연결)")
+        st.warning("조건을 만족하는 조합을 찾지 못했습니다. (조건을 완화하거나 포함/제외 번호를 확인해보세요.)")
