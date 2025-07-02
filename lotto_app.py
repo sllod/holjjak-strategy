@@ -94,7 +94,7 @@ def passes_filters(numbers, allowed_ratios):
     return True
 
 if st.button("번호 생성"):
-    with st.spinner("수백만 개 조합 중 시뮬레이션 및 필터링 중..."):
+    with st.spinner("백만 개 조합 중 시뮬레이션 및 필터링 중..."):
         time.sleep(random.uniform(1, 2))
 
     try:
