@@ -3,13 +3,12 @@ from itertools import combinations
 import numpy as np
 import time
 
-st.set_page_config(page_title="로또 정밀 분석기", page_icon="📊")
-st.title("로또 번호 정밀 분석기")
+st.set_page_config(page_title="로또 정밀 분석기 (완전 탐색)", page_icon="📊")
+st.title("로또 번호 정밀 분석기 (완전 탐색 버전)")
 
 st.markdown("""
 ### 📊 안내사항
-본 서비스는 모든 가능한 조합(814만 개)을 전부 탐색하여, 
-패턴과 통계 기준으로 점수를 평가하고 상위 5개 조합을 추천합니다.
+본 서비스는 모든 가능한 조합(814만 개)을 전부 탐색하여, 패턴과 통계 기준으로 점수를 평가하고 상위 5개 조합을 추천합니다.
 모든 번호는 참고용이며, 실제 당첨을 보장하지 않습니다.
 번호 선택 및 구매는 전적으로 개인의 판단과 책임입니다.
 """)
@@ -58,6 +57,8 @@ if st.button("완전 탐색 시작"):
         best_combinations = []
 
         count = 0
+        progress_text = st.empty()  # ✅ 한 줄 갱신용 컨테이너
+
         for comb in combinations(range(1, 46), 6):
             count += 1
             score = score_combination(comb)
@@ -65,7 +66,7 @@ if st.button("완전 탐색 시작"):
                 best_combinations.append((list(comb), score))
 
             if count % 500000 == 0:
-                st.info(f"진행 중... {count}개 평가 완료")
+                progress_text.info(f"진행 중... {count:,}개 평가 완료")  # ✅ 한 줄 갱신
 
         best_combinations.sort(key=lambda x: x[1], reverse=True)
 
