@@ -2,6 +2,8 @@ import streamlit as st
 from itertools import combinations
 import numpy as np
 import time
+import random
+import datetime
 
 st.set_page_config(page_title="로또 정밀 분석기", page_icon="📊")
 st.title("로또 번호 정밀 분석기")
@@ -86,17 +88,37 @@ if st.button("추천 번호 탐색 시작"):
             count += 1
             score = score_combination(comb)
             if score > 0:
-                best_combinations.append((list(comb), score))
+                best_combinations.append((list(comb), score, sum(comb), np.std(comb)))
 
             if count % 500000 == 0:
                 progress_text.info(f"진행 중... {count:,}개 평가 완료")
 
-        best_combinations.sort(key=lambda x: x[1], reverse=True)
-        top_5 = best_combinations[:5]
+        # 점수, 합계, 표준편차 기준 정렬
+        best_combinations.sort(key=lambda x: (-x[1], x[2], x[3]))
+
+        # 매주 기준 seed
+        today = datetime.date.today()
+        random.seed(today.isocalendar()[1])
+
+        # 상위 100개 중에서 랜덤하게 순서 섞기
+        top_candidates = best_combinations[:100]
+        random.shuffle(top_candidates)
+
+        # 중복 제거하며 5개 선택
+        selected = []
+        used_sets = set()
+
+        for combo_info in top_candidates:
+            num_set = frozenset(combo_info[0])
+            if num_set not in used_sets:
+                selected.append(combo_info)
+                used_sets.add(num_set)
+            if len(selected) >= 5:
+                break
 
         end_time = time.time()
         st.success(f"완전 탐색 완료! (총 소요 시간: {round(end_time - start_time, 2)}초)")
 
-        for idx, (nums, score) in enumerate(top_5, start=1):
-            st.write(f"추천 조합 {idx}: {nums} / 종합 점수: {score} / 합계: {sum(nums)} / 표준편차: {round(np.std(nums), 2)}")
+        for idx, (nums, score, total, std) in enumerate(selected, start=1):
+            st.write(f"추천 조합 {idx}: {nums} / 종합 점수: {score} / 합계: {total} / 표준편차: {round(std, 2)}")
 
