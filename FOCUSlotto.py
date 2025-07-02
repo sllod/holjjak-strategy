@@ -73,7 +73,7 @@ def score_combination(numbers):
 
     return score
 
-if st.button("추천 번호 다양화 탐색 시작"):
+if st.button("추천 번호 탐색 시작"):
     with st.spinner("모든 조합을 탐색 중... (수 분 소요됩니다)"):
         start_time = time.time()
 
