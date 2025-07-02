@@ -3,12 +3,13 @@ from itertools import combinations
 import numpy as np
 import time
 
-st.set_page_config(page_title="로또 정밀 분석기 (완전 탐색)", page_icon="📊")
-st.title("로또 번호 정밀 분석기 (완전 탐색 버전)")
+st.set_page_config(page_title="로또 정밀 분석기", page_icon="📊")
+st.title("로또 번호 정밀 분석기")
 
 st.markdown("""
 ### 📊 안내사항
-본 서비스는 모든 가능한 조합(814만 개)을 전부 탐색하여, 패턴과 통계 기준으로 점수를 평가하고 상위 5개 조합을 추천합니다.
+본 서비스는 모든 가능한 조합(814만 개)을 전부 탐색하여, 
+패턴과 통계 기준으로 점수를 평가하고 상위 5개 조합을 추천합니다.
 모든 번호는 참고용이며, 실제 당첨을 보장하지 않습니다.
 번호 선택 및 구매는 전적으로 개인의 판단과 책임입니다.
 """)
