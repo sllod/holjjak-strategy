@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title(" 물류센터 직원용 걸음 수 & 동선 분석 도구")
+st.title("걸음 수 & 동선 분석 도구")
 
 st.header("기본 정보 입력")
 
