@@ -6,7 +6,7 @@ st.write("🚚 재고 배치와 피킹 동선에 따라 얼마나 걸음 수와 
 
 # 기본 입력
 zones = st.number_input("현재 작업 구역 개수 (예: 5)", min_value=1, value=5, step=1)
-total_items = st.number_input("하루 처리해야 할 제품 개수", min_value=1, value=300, step=10)
+total_items = st.number_input("하루 처리해야 할 제품 수량(건수x)", min_value=1, value=300, step=10)
 current_steps = st.number_input("현재 하루 걸음 수 (보)", min_value=1000, value=25000, step=1000)
 
 # 개선 시뮬레이션 입력
