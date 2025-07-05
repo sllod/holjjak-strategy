@@ -119,6 +119,10 @@ def passes_filters(numbers, allowed_ratios):
     if max(numbers) - min(numbers) < 15:
         return False
 
+    total = sum(numbers)
+    if total < 100 or total > 170:
+        return False
+
     return True
 
 if st.button("번호 생성"):
