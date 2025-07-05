@@ -19,21 +19,32 @@ st.markdown("""
 번호 선택 및 구매는 전적으로 개인의 판단과 책임입니다.
 """)
 
+# 👉 한자릿수 포함 여부 옵션 추가
+include_single_digits = st.checkbox("한자릿수 번호 포함하기", value=True)
+
 def score_combination(numbers):
     score = 0
 
-    # 구간 점수 (1~15, 16~30, 31~45 포함 시 가산점)
+    # 구간 점수 (1~15, 16~30, 31~45)
     g1 = any(1 <= n <= 15 for n in numbers)
     g2 = any(16 <= n <= 30 for n in numbers)
     g3 = any(31 <= n <= 45 for n in numbers)
-    if g1 and g2 and g3:
-        score += 20
-    else:
+
+    # 각 구간 가점 방식으로 변경
+    if g1:
+        score += 10
+    if g2:
+        score += 5
+    if g3:
+        score += 5
+
+    # 한자릿수 포함 여부 체크
+    if include_single_digits and not any(n <= 9 for n in numbers):
         return -1
 
-    # 합계 점수 (138 기준)
+    # 합계 점수 (기준값 138 → 범위 확대)
     total = sum(numbers)
-    if not (90 <= total <= 180):
+    if not (80 <= total <= 180):
         return -1
     score += max(0, 30 - abs(138 - total))
 
@@ -66,7 +77,7 @@ def score_combination(numbers):
     else:
         return -1
 
-    # 고저 번호
+    # 고저 번호 (저번호: 1~22)
     lows = len([n for n in numbers if n <= 22])
     if lows in [2, 3, 4]:
         score += 10
@@ -80,7 +91,6 @@ if st.button("추천 번호 탐색 시작"):
         start_time = time.time()
 
         best_combinations = []
-
         count = 0
         progress_text = st.empty()
 
@@ -96,15 +106,12 @@ if st.button("추천 번호 탐색 시작"):
         # 점수, 합계, 표준편차 기준 정렬
         best_combinations.sort(key=lambda x: (-x[1], x[2], x[3]))
 
-        # 매주 기준 seed
         today = datetime.date.today()
         random.seed(today.isocalendar()[1])
 
-        # 상위 100개 중에서 랜덤하게 순서 섞기
         top_candidates = best_combinations[:100]
         random.shuffle(top_candidates)
 
-        # 중복 제거하며 5개 선택
         selected = []
         used_sets = set()
 
@@ -121,4 +128,5 @@ if st.button("추천 번호 탐색 시작"):
 
         for idx, (nums, score, total, std) in enumerate(selected, start=1):
             st.write(f"추천 조합 {idx}: {nums} / 종합 점수: {score} / 합계: {total} / 표준편차: {round(std, 2)}")
+
 
