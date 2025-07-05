@@ -10,7 +10,7 @@ st.title("로또 번호 생성기")
 # 안내사항
 st.markdown("""
 ### 📄 안내사항
-본 생성기는 **백만 개 조합 중 무작위 시뮬레이션 및 고급 필터링**을 통해 최적의 조합을 제공합니다.
+본 생성기는 **8백만 개 조합 중 무작위 시뮬레이션 및 고급 필터링**을 통해 최적의 조합을 제공합니다.
 
 본 서비스는 참고용 번호 추천 도구이며, 당첨을 보장하지 않습니다. 
 
@@ -113,7 +113,7 @@ def passes_filters(numbers, allowed_ratios):
     return True
 
 if st.button("번호 생성"):
-    with st.spinner("백만 개 조합 중 시뮬레이션 및 필터링 중..."):
+    with st.spinner("8백만 개 조합 중 시뮬레이션 및 필터링 중..."):
         time.sleep(random.uniform(1, 2))
 
     exclude_set = parse_numbers(exclude_numbers_input)
